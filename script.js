@@ -98,7 +98,7 @@ async function handleAuth() {
         email: username,
         password,
       });
-
+      const user_token = response.data.token;
       mnemonic = response.data.mnemonic;
       document.getElementById("user-name").innerText = username;
       document.getElementById("mnemonic-output").innerText = mnemonic;

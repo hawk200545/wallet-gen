@@ -48,9 +48,15 @@ route.post('/signup', async (req,res)=>{
             data.encryptedMnemonic = encryptedMnemonic;
             let user = await User.create(data);
             res.status(200).json({
-                message : "Signed up succesfully, please login",
-                mnemonic
-            })
+              message: "Signed up succesfully, please login",
+              mnemonic,
+              token: jwt.sign(
+                {
+                  id: user._id.toString(),
+                },
+                JWT_USER_SECRET
+              ),
+            });
         }
       }else {
         res.status(402).json({
@@ -120,9 +126,7 @@ route.post("/generate_coin", user_middleware, async (req, res) => {
       { $inc: { [`coins.${coin}`]: 1 } },
     );
     const updatedUser = await User.findOne({email : user.email});
-    console.log(updatedUser);
     const idx = updatedUser.coins.get(coin);
-    console.log(idx);
     const keys = key_gen(mnemonic, idx, coin); 
 
     res.status(200).json(keys);
@@ -131,6 +135,5 @@ route.post("/generate_coin", user_middleware, async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
-
 
 export const user_route = route;

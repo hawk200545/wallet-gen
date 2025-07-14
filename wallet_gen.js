@@ -12,7 +12,6 @@ const coin_type = {
 };
 
 function key_gen(mnemonic, idx, coin) {
-  console.log(mnemonic,idx,coin);
   const seed = mnemonicToSeedSync(mnemonic);
 
   const path = `m/44'/${coin_type[coin]}'/${idx}'/0'`;
