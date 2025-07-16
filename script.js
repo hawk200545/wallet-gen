@@ -31,7 +31,6 @@ async function generateAccount() {
     }
   );
 
-  // Simulated keys — replace with backend logic later
   const publicKey = response.data.Pub_Key;
   const privateKey = response.data.Priv_Key;
 
@@ -132,7 +131,7 @@ window.onload = function () {
   const user = localStorage.getItem("currentUser");
   if (user) {
     document.getElementById("user-name").innerText = user;
-    showPage("wallet-page"); // or phrase-page if you prefer
+    showPage("wallet-page"); 
   } else {
     showPage("auth-page");
   }

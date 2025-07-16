@@ -120,7 +120,7 @@ route.post("/generate_coin", user_middleware, async (req, res) => {
 
     const { mnemonic, coin } = req.body;
 
-    // Increment and return the updated user
+   
     await User.updateOne(
       { email: user.email },
       { $inc: { [`coins.${coin}`]: 1 } },
