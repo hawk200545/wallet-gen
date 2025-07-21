@@ -1,68 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Web3 Wallet UI</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-</head>
-
-<body>
-    <!-- Signup/Login Page -->
-    <div id="auth-page" class="page">
-        <div class="toggle-buttons">
-            <button id="signup-btn" class="toggle active" onclick="setMode('signup')">Signup</button>
-            <button id="login-btn" class="toggle" onclick="setMode('login')">Login</button>
-          </div>
-          
-          <h2 id="form-heading">Signup</h2>
-          
-          <input type="text" id="username" placeholder="Username" />
-          <input type="password" id="password" placeholder="Password" />
-        <button onclick="handleAuth()">Submit</button>
-
-          
-    </div>
-
-    <!-- Show Phrases Page -->
-    <div id="phrase-page" class="page hidden">
-        <h2>Your Secret Phrase</h2>
-        <p id="mnemonic-output">Loading...</p>
-        <button onclick="goToWalletPage()">Continue to Wallet</button>
-    </div>
-
-    <!-- Wallet Page -->
-    <div id="wallet-page" class="page hidden">
-        <div class="wallet-header">
-            <span id="user-name">User</span>
-            <button onclick="logout()">Logout</button>
-        </div>
-
-        <div class="wallet-body">
-            <div class="secret-box">
-                <label>Secret Phrase:</label>
-                <span id="secret-display">Hidden</span>
-                <button onclick="toggleSecret()">Show / Hide</button>
-            </div>
-
-            <div class="coin-generator">
-                <select id="coin-select">
-                    <option value="solana">Solana</option>
-                    <option value="ethereum">Ethereum</option>
-                    <option value="bitcoin">Bitcoin</option>
-                </select>
-                <button onclick="generateAccount()">Generate</button>
-            </div>
-
-            <div id="wallet-accounts" class="wallet-coins">
-                <!-- dynamically populated -->
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-
+    <title>Vite + React</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
