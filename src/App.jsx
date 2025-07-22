@@ -2,17 +2,21 @@ import React,{useState} from "react";
 import Login from './components/Login'
 import Signup from "./components/Signup";
 import Home from "./components/Home";
-import Header from "./components/Header";
+
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
-  const [home,SetHome] = useState(false);
-  const [login,SetLogin] = useState(true);
+  const [currentPage, setCurrentPage] = useState("login");
   return (
     <>
-     {login && <Login />}
-     {/* <Signup /> */}
-      <Header mail="hello@gmail.com"/>
-      {/* <Home></Home> */}
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/home" element={<Home mail={"Hello@gmail.cokm"}/>} />
+        </Routes>
+      </Router>
     </>
   );
 }
