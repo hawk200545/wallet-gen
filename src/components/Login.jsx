@@ -41,28 +41,31 @@ function Login() {
 
   return (
     <>
-      <form action="">
-        
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={email}
-          onChange={emailChange}
-        />
-        <div>{valid_email}</div>
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={passwordChange}
-        />
-        <div>{valid_password}</div>
-      </form>
-      <input type="button" onClick={SubmitEvent} value="Submit" />
+      <div className="box">
+        <form action="">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Email"
+            value={email}
+            onChange={emailChange}
+          />
+          <div>{valid_email}</div>
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={password}
+            placeholder="password"
+            onChange={passwordChange}
+          />
+          <div>{valid_password}</div>
+        </form>
+        <input type="button" onClick={SubmitEvent} value="Submit" />
+      </div>
     </>
   );
 }
