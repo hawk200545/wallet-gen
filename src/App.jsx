@@ -14,7 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/home" element={<Home mail={"Hello@gmail.cokm"}/>} />
+          <Route path="/home" element={<Home email={"Hello@gmail.com"}/>} />
         </Routes>
       </Router>
     </>

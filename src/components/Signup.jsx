@@ -1,101 +1,140 @@
 import React, { useState } from "react";
+import Footer from "./footer";
 import * as z from "zod";
+
 function Signup() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [valid_name,setValid_name] = useState("");
+  const [valid_name, setValid_name] = useState("");
   const [valid_email, setValid_email] = useState("");
   const [valid_password, setValid_password] = useState("");
 
   function SubmitEvent() {
-    //submit logic to the endpoint and wait for the response and Give the appropriate
+    // Submit logic
   }
 
-const nameChange = (e) => {
-  const value = e.target.value;
-  setName(value);
-  const username_format = z
-    .string()
-    .min(3, "Minimum 3 characters")
-    .max(10, "Maximum 10 characters")
-    .regex(
-      /^[a-zA-Z0-9_]+$/,
-      "Username can only contain letters, numbers, and underscores"
-    );
-  const response = username_format.safeParse(value);
-  if (!response.success) {
-    console.log(response)
-    setValid_name(response.error.issues[0].message); 
-  } else {
-    setValid_name("");
-  }
-};
-
+  const nameChange = (e) => {
+    const value = e.target.value;
+    setName(value);
+    const username_format = z
+      .string()
+      .min(3, "Minimum 3 characters")
+      .max(10, "Maximum 10 characters")
+      .regex(/^[a-zA-Z0-9_]+$/, "Only letters, numbers, underscores");
+    const response = username_format.safeParse(value);
+    setValid_name(response.success ? "" : response.error.issues[0].message);
+  };
 
   const passwordChange = (e) => {
-    setPassword(e.target.value);
+    const value = e.target.value;
+    setPassword(value);
     const pass_format = z
       .string()
       .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{5,}$/,
-        "Password must contain at least one uppercase, one lowercase, one number, one special character, and be at least 8 characters long."
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/,
+        "Password must be at least 8 characters with upper, lower, number, and special char."
       );
-    let response = pass_format.safeParse(password);
-    if (!response.success) {
-      setValid_password("Invalid Password Format");
-    } else {
-      setValid_password("");
-    }
+    const response = pass_format.safeParse(value);
+    setValid_password(response.success ? "" : "Invalid Password Format");
   };
 
   const emailChange = (e) => {
-    setEmail(e.target.value);
-    const email_format = z.email();
-    let response = email_format.safeParse(email);
-    console.log(response);
-    if (!response.success) {
-      setValid_email("Please Enter a valid email");
-    } else {
-      setValid_email("");
-    }
+    const value = e.target.value;
+    setEmail(value);
+    const email_format = z.string().email();
+    const response = email_format.safeParse(value);
+    setValid_email(response.success ? "" : "Please Enter a valid email");
   };
 
   return (
-    <>
-      <button>Signup</button>
-      <button>Login</button>
-      <form action="">
-        <label htmlFor="name">Name:</label>
-        <input
-          type="name"
-          id="name"
-          name="name"
-          value={name}
-          onChange={nameChange}
-        />
-        <div>{valid_name}</div>
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value={email}
-          onChange={emailChange}
-        />
-        <div>{valid_email}</div>
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value={password}
-          onChange={passwordChange}
-        />
-        <div>{valid_password}</div>
-      </form>
-      <input type="button" onClick={SubmitEvent} value="Submit" />
-    </>
+    <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-blue-900 min-h-screen flex flex-col">
+      <div className="flex-1 flex items-center justify-center text-slate-200 p-4">
+        <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+          {/* Branding */}
+          <div>
+            <div className="text-4xl font-bold mb-4 sm:text-6xl">
+              Welcome to Hawk Wallet
+            </div>
+            <div className="sm:text-lg">Secure your finances in style.</div>
+          </div>
+
+          {/* Signup Form */}
+          <div className="backdrop-blur-lg bg-white/10 p-8 rounded-xl shadow-lg">
+            <form className="space-y-4">
+              {/* Name Field */}
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium">
+                  Name:
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={nameChange}
+                  placeholder="Username"
+                  className="w-full mt-1 p-2 rounded bg-white/20 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <div className="text-red-400 text-xs mt-1 text-right">{valid_name}</div>
+              </div>
+
+              {/* Email Field */}
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium">
+                  Email:
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={emailChange}
+                  placeholder="Email"
+                  className="w-full mt-1 p-2 rounded bg-white/20 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <div className="text-red-400 text-xs mt-1 text-right">{valid_email}</div>
+              </div>
+
+              {/* Password Field */}
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium">
+                  Password:
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={passwordChange}
+                  placeholder="Password"
+                  className="w-full mt-1 p-2 rounded bg-white/20 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <div className="text-red-400 text-xs mt-1 text-right">
+                  {valid_password}
+                </div>
+              </div>
+
+              {/* Already have an account? */}
+              <div className="text-xs">
+                Already have an account?{" "}
+                <a className="text-blue-500" href="/">
+                  Login
+                </a>
+              </div>
+
+              {/* Submit Button */}
+              <input
+                type="button"
+                onClick={SubmitEvent}
+                value="Sign up"
+                className="bg-gradient-to-b w-full from-purple-400 to-purple-700 text-white font-medium px-6 py-2 rounded-lg shadow hover:brightness-110 transition"
+              />
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer fixed at bottom */}
+      <Footer />
+    </div>
   );
 }
 
