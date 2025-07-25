@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Footer from "./footer";
 import * as z from "zod";
+import axios from "axios";
 
 function Signup() {
   const [email, setEmail] = useState("");
@@ -10,8 +11,24 @@ function Signup() {
   const [valid_email, setValid_email] = useState("");
   const [valid_password, setValid_password] = useState("");
 
-  function SubmitEvent() {
-    // Submit logic
+  async function SubmitEvent() {
+      if (valid_name || valid_email || valid_password) {
+        alert("Please fix the errors before submitting.");
+        return;
+      }
+      const data = {
+        name,
+        email,
+        password 
+      }
+
+      let response = await axios.post("/api/signup",data);
+      if (response.status === 200) {
+        alert("Signup successful! Please login.");
+        window.location.href = "/";
+      } else {
+        alert("Signup failed. Please try again.");
+      }
   }
 
   const nameChange = (e) => {
