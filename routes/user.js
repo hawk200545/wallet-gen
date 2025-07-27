@@ -1,20 +1,35 @@
 import dotenv from "dotenv";
-import {Router} from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Required for __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env from project root
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+
+
+import {response, Router} from "express";
 import * as z from "zod";
 import jwt from "jsonwebtoken";
 import express from"express";
-import {User} from "./db.js"
+import {User} from "../database/db.js";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import {key_gen, mnemonic_gen, encryptMnemonic,decryptMnemonic} from "./wallet_gen.js";
-dotenv.config();
+import {key_gen, mnemonic_gen, encryptMnemonic,decryptMnemonic} from "../wallet/wallet_gen.js";
+
 import crypto from "crypto";
 const JWT_USER_SECRET = process.env.JWT_USER_SECRET;
-import {user_middleware} from "./admin_middleware.js";
+import {user_middleware} from "../middleware/admin_middleware.js";
+import { id } from "zod/locales";
 const route = Router();
 route.use(express.json());
+
 route.post('/signup', async (req,res)=>{
     const user_parse = z.object({
+        name : z.string(),
         email: z.email(),
         password: z
           .string()
@@ -49,7 +64,6 @@ route.post('/signup', async (req,res)=>{
             let user = await User.create(data);
             res.status(200).json({
               message: "Signed up succesfully, please login",
-              mnemonic,
               token: jwt.sign(
                 {
                   id: user._id.toString(),
@@ -59,7 +73,7 @@ route.post('/signup', async (req,res)=>{
             });
         }
       }else {
-        res.status(402).json({
+        res.status(401).json({
             error : err
         })
       }
@@ -98,7 +112,7 @@ route.post('/login', async (req,res)=>{
           mnemonic: decryptMnemonic({salt,iv,encryptedMnemonic}, data.password),
         });
       } else {
-        res.status(403).json({
+        res.status(401).json({
           message: "Invalid Password",
         });
       }
@@ -110,7 +124,9 @@ route.post('/login', async (req,res)=>{
 
 route.post("/generate_coin", user_middleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({
+      _id: req.user.id.toString(),
+    });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -133,5 +149,17 @@ route.post("/generate_coin", user_middleware, async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 });
+
+route.get('/get-coin', user_middleware,async (req,res)=>{
+    let respose = await User.findOne({_id: req.user.id.toString()});
+    if (respose){
+      console.log(res)
+      res.json(response.coins);
+    }else{
+      res.status(401).json({
+        message : "No user found"
+      })
+    } 
+})
 
 export const user_route = route;
