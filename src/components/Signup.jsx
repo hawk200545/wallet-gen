@@ -22,7 +22,7 @@ function Signup() {
         password 
       }
 
-      let response = await axios.post("/api/signup",data);
+      let response = await axios.post("http://localhost:3000/api/signup", data);
       if (response.status === 200) {
         alert("Signup successful! Please login.");
         window.location.href = "/";

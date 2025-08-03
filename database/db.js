@@ -1,15 +1,6 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
 
-// Required for __dirname in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Load .env from project root
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
-const mongo_url = process.env.mongo_url;
+import {mongo_url} from '../.config/config.js'
 
 console.log("MongoDB URL:", mongo_url);
 

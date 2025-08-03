@@ -1,6 +1,7 @@
 node_modules
 *.drawio
 .env
+.config
 # Logs
 logs
 *.log

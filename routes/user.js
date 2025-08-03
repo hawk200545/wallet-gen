@@ -1,16 +1,14 @@
-import dotenv from "dotenv";
 import {Router} from "express";
 import * as z from "zod";
 import jwt from "jsonwebtoken";
 import express from"express";
-import {User} from "./db.js"
+import {User} from "../database/db.js"
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
 import {key_gen, mnemonic_gen, encryptMnemonic,decryptMnemonic} from "../wallet/wallet_gen.js";
-dotenv.config();
 import crypto from "crypto";
-const JWT_USER_SECRET = process.env.JWT_USER_SECRET;
-import {user_middleware} from "./admin_middleware.js";
+import {JWT_USER_SECRET} from '../.config/config.js';
+import {user_middleware} from "../middleware/admin_middleware.js";
 const route = Router();
 route.use(express.json());
 route.post('/signup', async (req,res)=>{
@@ -97,13 +95,13 @@ route.post('/login', async (req,res)=>{
           ),
           mnemonic: decryptMnemonic({salt,iv,encryptedMnemonic}, data.password),
         });
-      } else {
+      } else{
         res.status(403).json({
           message: "Invalid Password",
         });
       }
     } else {
-      message: "Email is not registered, Please Signup";
+      message : "Email is not registered, Please Signup";
     }
   }
 });

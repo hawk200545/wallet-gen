@@ -1,14 +1,35 @@
 import React, { useState } from "react";
 import * as z from "zod";
-import Footer from './footer'
+import Footer from "./footer";
+import axios from "axios";
+import { useAppContext } from "./AppContext";
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {updateEmail,updateSignin,updateMnemonic,updateToken} = useAppContext();
+  const [email,setEmail] = useState("");
+  const [password,setPassword] = useState();
   const [valid_email, setValid_email] = useState("");
   const [valid_password, setValid_password] = useState("");
 
-  function SubmitEvent() {
-    //submit logic to the endpoint and wait for the response and Give the appropriate
+  async function SubmitEvent() {
+    
+    if (valid_email || valid_password) {
+      alert("Please fix the errors before submiting");
+      return;
+    }
+    const data = {
+      email,
+      password,
+    };
+    let response = await axios.post("http://localhost:3000/api/login", data);
+    if((await response).status == 200){
+      alert('login successfull');
+      console.log(response.data);
+      updateEmail(email);
+      updateMnemonic(response.data.mnemonic);
+      updateToken(response.data.token);
+      updateSignin(true);
+      location.href('/home'); 
+    }
   }
 
   const passwordChange = (e) => {
@@ -19,7 +40,7 @@ function Login() {
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{5,}$/,
         "Password must contain at least one uppercase, one lowercase, one number, one special character, and be at least 8 characters long."
       );
-    let response = pass_format.safeParse(password);
+    let response = pass_format.safeParse(e.target.value);
     if (!response.success) {
       setValid_password("Invalid Password Format");
     } else {
@@ -30,7 +51,7 @@ function Login() {
   const emailChange = (e) => {
     setEmail(e.target.value);
     const email_format = z.email();
-    let response = email_format.safeParse(email);
+    let response = email_format.safeParse(e.target.value);
     console.log(response);
     if (!response.success) {
       setValid_email("Please Enter a valid email");
@@ -73,7 +94,9 @@ function Login() {
                       onChange={emailChange}
                       className="w-full mt-1 p-2 rounded bg-white/20 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    <div className="text-red-400 text-xs mt-1 text-right">{valid_email}</div>
+                    <div className="text-red-400 text-xs mt-1 text-right">
+                      {valid_email}
+                    </div>
                   </div>
 
                   <div>
@@ -106,7 +129,8 @@ function Login() {
                     type="button"
                     onClick={SubmitEvent}
                     value="Submit"
-                  className="bg-gradient-to-b w-full from-purple-400 to-purple-700 text-white font-medium px-6 py-2 rounded-lg shadow hover:brightness-110 transition"/>
+                    className="bg-gradient-to-b w-full from-purple-400 to-purple-700 text-white font-medium px-6 py-2 rounded-lg shadow hover:brightness-110 transition"
+                  />
                 </form>
               </div>
             </div>
