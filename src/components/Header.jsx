@@ -1,8 +1,7 @@
-import { useState } from "react";
+import useAppContext from "../hooks/useAppContext";
+function Header() {
 
-function Header(props) {
-    const email = props.email;
-    const logoutHandle = props.logoutHandle;
+    const {email, logoutHandle} = useAppContext();
     return (
         <>
             <div className="backdrop-blur-lg bg-white/10 w-full flex justify-between">

@@ -6,8 +6,8 @@ import { b_port as port } from "./.config/config.js";
 app.use(
   cors({
     origin: "http://localhost:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "token"],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'token'],
   })
 );
 app.use(express.json());

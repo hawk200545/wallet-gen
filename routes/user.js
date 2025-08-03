@@ -23,9 +23,8 @@ route.post('/signup', async (req,res)=>{
           }),
       });
       let parse_response =  user_parse.safeParse(req.body);
-      let data = parse_response.data;
-      let err = parse_response.error;
       if (parse_response.success){
+        let data = parse_response.data;
         let response = await User.findOne({ email: data.email });
         if(response){
             res.status(403).json({
@@ -58,7 +57,7 @@ route.post('/signup', async (req,res)=>{
         }
       }else {
         res.status(402).json({
-            error : err
+            error : parse_response.error
         })
       }
 });
@@ -101,8 +100,10 @@ route.post('/login', async (req,res)=>{
         });
       }
     } else {
-      message : "Email is not registered, Please Signup";
+      res.status(404).json({ message : "Email is not registered, Please Signup" });
     }
+  } else {
+    res.status(400).json({ error: err });
   }
 });
 
@@ -131,6 +132,41 @@ route.post("/generate_coin", user_middleware, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+
+route.get('/wallets', user_middleware, async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.user.id });
+    console.log("User object in /wallets:", user);
+    console.log("User coins in /wallets:", user.coins);
+    res.json({
+      bitcoin: user.coins.get('bitcoin') || 0,
+      ethereum: user.coins.get('ethereum') || 0,
+      solana: user.coins.get('solana') || 0
+    });
+  } catch (e) {
+    console.error("Error in /wallets endpoint:", e);
+    res.status(500).json({ message: e });
+  }
+});
+
+route.post('/increment-wallet', user_middleware, async (req, res) => {
+  const { coinType } = req.body;
+  console.log("Incrementing wallet for coinType:", coinType);
+  try {
+    const result = await User.updateOne(
+      { _id: req.user.id },
+      { $inc: { [`coins.${coinType}`]: 1 } }
+    );
+    console.log("Update result:", result);
+    const updatedUser = await User.findOne({ _id: req.user.id });
+    console.log("Updated user object:", updatedUser);
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error incrementing wallet:", error);
+    res.status(500).json({ message: "Error incrementing wallet" });
   }
 });
 

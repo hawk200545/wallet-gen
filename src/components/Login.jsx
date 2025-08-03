@@ -1,14 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as z from "zod";
 import Footer from "./footer";
 import axios from "axios";
-import { useAppContext } from "./AppContext";
+import useAppContext from "../hooks/useAppContext";
+import { useNavigate } from "react-router-dom";
 function Login() {
-  const {updateEmail,updateSignin,updateMnemonic,updateToken} = useAppContext();
+  const {updateEmail,updateSignedIn,updateMnemonic,updateToken} = useAppContext();
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState();
   const [valid_email, setValid_email] = useState("");
   const [valid_password, setValid_password] = useState("");
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      navigate('/home');
+    }
+  }, [navigate]);
 
   async function SubmitEvent() {
     
@@ -27,8 +36,9 @@ function Login() {
       updateEmail(email);
       updateMnemonic(response.data.mnemonic);
       updateToken(response.data.token);
-      updateSignin(true);
-      location.href('/home'); 
+      updateSignedIn(true);
+      navigate("/home");
+      
     }
   }
 
