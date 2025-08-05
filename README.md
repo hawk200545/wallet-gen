@@ -30,18 +30,18 @@ A beginner-friendly Web3 wallet generator that allows users to create blockchain
 Clone the project
 
 ```bash
-  git clone https://github.com/hawk200545/wallet-gen
+git clone https://github.com/hawk200545/wallet-gen
 ```
 Go to Project directory 
 ```bash
-    cd web3-wallet-generator
+cd web3-wallet-generator
 ```
 Install Dependencies 
 ```bash
-    npm install
+npm install
 ```
 Run
 ```bash
-    node index.js
+node index.js
 ```
 
