@@ -4,9 +4,8 @@ import jwt from "jsonwebtoken";
 import express from"express";
 import {User} from "../database/db.js"
 import bcrypt from "bcrypt";
-import mongoose from "mongoose";
 import {key_gen, mnemonic_gen, encryptMnemonic} from "../../wallet/wallet_gen.js";
-import {JWT_USER_SECRET} from '../../.config/config.js';
+import {JWT_USER_SECRET} from "../.config/config.js";
 import {user_middleware} from "../middleware/admin_middleware.js";
 const route = Router();
 route.use(express.json());

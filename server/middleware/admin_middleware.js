@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-import { JWT_USER_SECRET } from "../../.config/config.js";
+import { JWT_USER_SECRET } from "../.config/config.js";
 
 function user_middleware(req, res, next) {
   try {
