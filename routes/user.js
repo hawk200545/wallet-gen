@@ -1,18 +1,35 @@
-import {Router} from "express";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Required for __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env from project root
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+
+
+import {response, Router} from "express";
 import * as z from "zod";
 import jwt from "jsonwebtoken";
 import express from"express";
-import {User} from "../database/db.js"
+import {User} from "../database/db.js";
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import {key_gen, mnemonic_gen, encryptMnemonic} from "../../wallet/wallet_gen.js";
-import {JWT_USER_SECRET} from '../../.config/config.js';
+import {key_gen, mnemonic_gen, encryptMnemonic,decryptMnemonic} from "../wallet/wallet_gen.js";
+
+import crypto from "crypto";
+const JWT_USER_SECRET = process.env.JWT_USER_SECRET;
 import {user_middleware} from "../middleware/admin_middleware.js";
+import { id } from "zod/locales";
 const route = Router();
 route.use(express.json());
+
 route.post('/signup', async (req,res)=>{
     const user_parse = z.object({
-        name: z.string().min(1, { message: "Name is required" }),
+        name : z.string(),
         email: z.email(),
         password: z
           .string()
@@ -23,8 +40,9 @@ route.post('/signup', async (req,res)=>{
           }),
       });
       let parse_response =  user_parse.safeParse(req.body);
+      let data = parse_response.data;
+      let err = parse_response.error;
       if (parse_response.success){
-        let data = parse_response.data;
         let response = await User.findOne({ email: data.email });
         if(response){
             res.status(403).json({
@@ -32,15 +50,16 @@ route.post('/signup', async (req,res)=>{
             })
         }else{
             const pass = data.password;
-            // TODO: Consider increasing bcrypt salt rounds (e.g., to 10-12) for better security in production.
             data.password = await bcrypt.hash(data.password, 3);
+            const iv = crypto.randomBytes(16);
+            data.iv = iv.toString('hex');
             const mnemonic = mnemonic_gen();
-            const { salt, iv, encryptedMnemonic } = encryptMnemonic(
+            const { salt, encryptedMnemonic } = encryptMnemonic(
               mnemonic,
-              pass
+              pass,
+              iv
             );
             data.salt = salt;
-            data.iv = iv;
             data.encryptedMnemonic = encryptedMnemonic;
             let user = await User.create(data);
             res.status(200).json({
@@ -54,8 +73,8 @@ route.post('/signup', async (req,res)=>{
             });
         }
       }else {
-        res.status(400).json({
-            error : parse_response.error
+        res.status(401).json({
+            error : err
         })
       }
 });
@@ -90,26 +109,24 @@ route.post('/login', async (req,res)=>{
             },
             JWT_USER_SECRET
           ),
-          salt,
-          iv,
-          encryptedMnemonic,
+          mnemonic: decryptMnemonic({salt,iv,encryptedMnemonic}, data.password),
         });
-      } else{
-        res.status(403).json({
+      } else {
+        res.status(401).json({
           message: "Invalid Password",
         });
       }
     } else {
-      res.status(404).json({ message : "Email is not registered, Please Signup" });
+      message: "Email is not registered, Please Signup";
     }
-  } else {
-    res.status(400).json({ error: err });
   }
 });
 
 route.post("/generate_coin", user_middleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findOne({
+      _id: req.user.id.toString(),
+    });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -133,34 +150,16 @@ route.post("/generate_coin", user_middleware, async (req, res) => {
   }
 });
 
-
-route.get('/wallets', user_middleware, async (req, res) => {
-  try {
-    const user = await User.findOne({ _id: req.user.id });
-    res.json({
-      bitcoin: user.coins.get('bitcoin') || 0,
-      ethereum: user.coins.get('ethereum') || 0,
-      solana: user.coins.get('solana') || 0
-    });
-  } catch (e) {
-    console.error("Error in /wallets endpoint:", e);
-    res.status(500).json({ message: e });
-  }
-});
-
-route.post('/increment-wallet', user_middleware, async (req, res) => {
-  const { coinType } = req.body;
-  try {
-    const result = await User.updateOne(
-      { _id: req.user.id },
-      { $inc: { [`coins.${coinType}`]: 1 } }
-    );
-    await User.findOne({ _id: req.user.id });
-    res.json({ success: true , result});
-  } catch (error) {
-    console.error("Error incrementing wallet:", error);
-    res.status(500).json({ message: "Error incrementing wallet" });
-  }
-});
+route.get('/get-coin', user_middleware,async (req,res)=>{
+    let respose = await User.findOne({_id: req.user.id.toString()});
+    if (respose){
+      console.log(res)
+      res.json(response.coins);
+    }else{
+      res.status(401).json({
+        message : "No user found"
+      })
+    } 
+})
 
 export const user_route = route;
