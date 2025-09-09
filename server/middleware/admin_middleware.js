@@ -1,9 +1,6 @@
-import dotenv from "dotenv";
-dotenv.config();
-import express from "express";
 import jwt from "jsonwebtoken";
 
-const JWT_USER_SECRET = process.env.JWT_USER_SECRET;
+import { JWT_USER_SECRET } from "../../.config/config.js";
 
 function user_middleware(req, res, next) {
   try {
@@ -14,13 +11,12 @@ function user_middleware(req, res, next) {
 
     const decoded = jwt.verify(token, JWT_USER_SECRET);
 
-    req.user = { id: decoded.id }; 
+    req.user = { id: decoded.id };
     next();
   } catch (err) {
     console.error("JWT Error:", err.message);
     res.status(403).json({ error: "Invalid credentials" });
   }
 }
-  
 
 export { user_middleware };

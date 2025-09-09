@@ -1,47 +1,12 @@
-# Web3 Wallet Generator
+# React + Vite
 
-A beginner-friendly Web3 wallet generator that allows users to create blockchain wallets (Solana, Ethereum, Bitcoin) using mnemonics, manage multiple accounts per coin, and securely store their credentials. Designed for developers and blockchain learners who want a foundational full-stack crypto wallet app.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Tech Stack
+Currently, two official plugins are available:
 
-- Frontend: HTML, CSS, JavaScript, Axios
-- Backend: Node.js, Express.js
-- Database: MongoDB + Mongoose
-- Crypto: bip39, tweetnacl, ed25519-hd-key, @solana/web3.js
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
+## Expanding the ESLint configuration
 
-## Demo
-
-![Demo](assets/output.gif)
-
-## Features
-
-- Secure user signup & login with password hashing
-- Mnemonic generation and encryption using password
-- Derive public/private key pairs for Solana, Ethereum, and Bitcoin
-- Dynamic wallet generation per coin with account indexing
-- Toggle buttons to show/hide private keys and seed phrases
-- Token-based user authentication (JWT)
-- MongoDB persistence for user data
-- Clean, responsive UI with login/signup toggle
-
-## Run Locally
-
-Clone the project
-
-```bash
-git clone https://github.com/hawk200545/wallet-gen
-```
-Go to Project directory 
-```bash
-cd web3-wallet-generator
-```
-Install Dependencies 
-```bash
-npm install
-```
-Run
-```bash
-node index.js
-```
-
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

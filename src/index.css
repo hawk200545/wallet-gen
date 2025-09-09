@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+#root {
+  background-color: rgb(24, 21, 39);
+  color: white;
+}
+
+@theme {
+  --color-brand-black: #0d0d0d;
+    --color-primary : #9bbed2;
+    --color-secondary : #608faf;
+  /* Color Primary */
+  --color-matisse-50: #f2f8fd;
+  --color-matisse-100: #e4effa;
+  --color-matisse-200: #c4dff3;
+  --color-matisse-300: #8fc4ea;
+  --color-matisse-400: #53a5dd;
+  --color-matisse-500: #2d8aca;
+  --color-matisse-600: #1c669f;
+  --color-matisse-700: #1a578a;
+  --color-matisse-800: #194b73;
+  --color-matisse-900: #1a3f60;
+  --color-matisse-950: #112940;
+
+  --font-quintessential: "Quintessential", serif;
+}
+
+.input-text{
+    @apply w-full mt-1 p-2 
+    h-7 sm:h-10
+    rounded bg-white/20 text-primary font-light 
+    placeholder-gray-300/60  placeholder:text-sm  
+    outline-none focus:ring-1 focus:ring-matisse-200
+}
+
+.submit-button{
+  @apply bg-gradient-to-b w-full cursor-pointer text-sm whitespace-nowrap
+from-matisse-400 to-matisse-700 h-10 my-2 text-white
+  px-6 py-1 rounded-lg shadow hover:brightness-110 transition duration-150
+}
+
+.warn-line{
+  @apply text-red-400 text-xs mt-1 text-right
+}

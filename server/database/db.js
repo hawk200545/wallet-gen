@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
-import { required } from "zod/mini";
-dotenv.config();
-const mongo_url = process.env.mongo_url;
+
+import {mongo_url} from '../../.config/config.js'
+
+console.log("MongoDB URL:", mongo_url);
 
 // Connect to MongoDB
 const mongo_connect = async () => {
@@ -16,6 +16,10 @@ const mongo_connect = async () => {
 
 // Define the User schema
 const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     unique: true,
@@ -37,14 +41,14 @@ const userSchema = new mongoose.Schema({
     type: Map,
     of: Number,
     default: {
-      bitcoin : 0,
-      ethereum : 0,
-      solana : 0
+      bitcoin: 0,
+      ethereum: 0,
+      solana: 0,
     },
   },
-  salt : {
-    type : String,
-    required : true
+  salt: {
+    type: String,
+    required: true,
   },
   created_at: {
     type: Date,
