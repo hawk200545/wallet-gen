@@ -5,14 +5,14 @@ import express from"express";
 import {User} from "../database/db.js"
 import bcrypt from "bcrypt";
 import mongoose from "mongoose";
-import {key_gen, mnemonic_gen, encryptMnemonic,decryptMnemonic} from "../wallet/wallet_gen.js";
-import crypto from "crypto";
-import {JWT_USER_SECRET} from '../.config/config.js';
+import {key_gen, mnemonic_gen, encryptMnemonic} from "../../wallet/wallet_gen.js";
+import {JWT_USER_SECRET} from '../../.config/config.js';
 import {user_middleware} from "../middleware/admin_middleware.js";
 const route = Router();
 route.use(express.json());
 route.post('/signup', async (req,res)=>{
     const user_parse = z.object({
+        name: z.string().min(1, { message: "Name is required" }),
         email: z.email(),
         password: z
           .string()
@@ -32,21 +32,19 @@ route.post('/signup', async (req,res)=>{
             })
         }else{
             const pass = data.password;
+            // TODO: Consider increasing bcrypt salt rounds (e.g., to 10-12) for better security in production.
             data.password = await bcrypt.hash(data.password, 3);
-            const iv = crypto.randomBytes(16);
-            data.iv = iv.toString('hex');
             const mnemonic = mnemonic_gen();
-            const { salt, encryptedMnemonic } = encryptMnemonic(
+            const { salt, iv, encryptedMnemonic } = encryptMnemonic(
               mnemonic,
-              pass,
-              iv
+              pass
             );
             data.salt = salt;
+            data.iv = iv;
             data.encryptedMnemonic = encryptedMnemonic;
             let user = await User.create(data);
             res.status(200).json({
               message: "Signed up succesfully, please login",
-              mnemonic,
               token: jwt.sign(
                 {
                   id: user._id.toString(),
@@ -56,7 +54,7 @@ route.post('/signup', async (req,res)=>{
             });
         }
       }else {
-        res.status(402).json({
+        res.status(400).json({
             error : parse_response.error
         })
       }
@@ -92,7 +90,9 @@ route.post('/login', async (req,res)=>{
             },
             JWT_USER_SECRET
           ),
-          mnemonic: decryptMnemonic({salt,iv,encryptedMnemonic}, data.password),
+          salt,
+          iv,
+          encryptedMnemonic,
         });
       } else{
         res.status(403).json({
@@ -139,8 +139,6 @@ route.post("/generate_coin", user_middleware, async (req, res) => {
 route.get('/wallets', user_middleware, async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.user.id });
-    console.log("User object in /wallets:", user);
-    console.log("User coins in /wallets:", user.coins);
     res.json({
       bitcoin: user.coins.get('bitcoin') || 0,
       ethereum: user.coins.get('ethereum') || 0,
@@ -154,16 +152,13 @@ route.get('/wallets', user_middleware, async (req, res) => {
 
 route.post('/increment-wallet', user_middleware, async (req, res) => {
   const { coinType } = req.body;
-  console.log("Incrementing wallet for coinType:", coinType);
   try {
     const result = await User.updateOne(
       { _id: req.user.id },
       { $inc: { [`coins.${coinType}`]: 1 } }
     );
-    console.log("Update result:", result);
-    const updatedUser = await User.findOne({ _id: req.user.id });
-    console.log("Updated user object:", updatedUser);
-    res.json({ success: true });
+    await User.findOne({ _id: req.user.id });
+    res.json({ success: true , result});
   } catch (error) {
     console.error("Error incrementing wallet:", error);
     res.status(500).json({ message: "Error incrementing wallet" });

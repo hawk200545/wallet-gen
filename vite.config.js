@@ -7,11 +7,27 @@ import wasm from "vite-plugin-wasm";
 
 // https://vite.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      crypto: "crypto-browserify",
+    },
+  },
   optimizeDeps: {
-    exclude: ['crypto-browserify'], 
+    include: [
+      'crypto-browserify',
+      'randombytes',
+      'create-hash',
+      'create-hmac',
+      'browserify-sign',
+      'diffie-hellman',
+      'public-encrypt',
+      'randomfill',
+      'pbkdf2',
+      'browserify-cipher',
+    ],
   },
   define: {
-    global: {}, 
+    global: {},
   },
   plugins: [react(), tailwindcss(), nodePolyfills(), wasm()],
 });

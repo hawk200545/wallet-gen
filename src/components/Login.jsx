@@ -1,44 +1,51 @@
-import React, { useState, useEffect } from "react";
+import React, { useState,  } from "react";
+import { toast } from 'react-toastify';
 import * as z from "zod";
 import Footer from "./footer";
 import axios from "axios";
-import useAppContext from "../hooks/useAppContext";
+import { decryptMnemonic } from "../progs/wallet-gen.js";
 import { useNavigate } from "react-router-dom";
+import useAppContext from "../hooks/useAppContext";
 function Login() {
   const {updateEmail,updateSignedIn,updateMnemonic,updateToken} = useAppContext();
   const [email,setEmail] = useState("");
-  const [password,setPassword] = useState();
+  const [password,setPassword] = useState("");
   const [valid_email, setValid_email] = useState("");
   const [valid_password, setValid_password] = useState("");
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (localStorage.getItem('token')) {
-      navigate('/home');
-    }
-  }, [navigate]);
+
+
+  
 
   async function SubmitEvent() {
-    
     if (valid_email || valid_password) {
-      alert("Please fix the errors before submiting");
+      toast.error("Please fix the errors before submitting");
       return;
     }
     const data = {
       email,
       password,
     };
-    let response = await axios.post("http://localhost:3000/api/login", data);
-    if((await response).status == 200){
-      alert('login successfull');
-      console.log(response.data);
-      updateEmail(email);
-      updateMnemonic(response.data.mnemonic);
-      updateToken(response.data.token);
-      updateSignedIn(true);
-      navigate("/home");
-      
+    try {
+      let response = await axios.post("http://localhost:3000/api/login", data);
+      if (response.status === 200) {
+        toast.success('Login successful!');
+        console.log(response.data);
+        const { salt, iv, encryptedMnemonic } = response.data;
+        const decryptedMnemonic = await decryptMnemonic({ salt, iv, encryptedMnemonic }, password);
+        updateEmail(email);
+        updateMnemonic(decryptedMnemonic);
+        updateToken(response.data.token);
+        updateSignedIn(true);
+        navigate("/home");
+      } else {
+        toast.error(response.data.message || 'Login failed.');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error('An error occurred during login.');
     }
   }
 

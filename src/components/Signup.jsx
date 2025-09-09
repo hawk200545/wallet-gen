@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { toast } from 'react-toastify';
 import Footer from "./footer";
 import * as z from "zod";
 import axios from "axios";
@@ -10,10 +11,11 @@ function Signup() {
   const [valid_name, setValid_name] = useState("");
   const [valid_email, setValid_email] = useState("");
   const [valid_password, setValid_password] = useState("");
+  
 
   async function SubmitEvent() {
       if (valid_name || valid_email || valid_password) {
-        alert("Please fix the errors before submitting.");
+        toast.error("Please fix the errors before submitting.");
         return;
       }
       const data = {
@@ -22,12 +24,17 @@ function Signup() {
         password 
       }
 
-      let response = await axios.post("http://localhost:3000/api/signup", data);
-      if (response.status === 200) {
-        alert("Signup successful! Please login.");
-        window.location.href = "/";
-      } else {
-        alert("Signup failed. Please try again.");
+      try {
+        let response = await axios.post("http://localhost:3000/api/signup", data);
+        if (response.status === 200) {
+          toast.success("Signup successful! Please login.");
+          window.location.href = "/";
+        } else {
+          toast.error(response.data.message || "Signup failed. Please try again.");
+        }
+      } catch (error) {
+        console.error('Signup error:', error);
+        toast.error('An error occurred during signup.');
       }
   }
 

@@ -30,41 +30,24 @@ function mnemonic_gen() {
   return generateMnemonic();
 }
 
-function generateKey(password, salt) {
-  return crypto.scryptSync(password, salt, 32); 
-}
+function encryptMnemonic(mnemonic, password) {
+  const salt = crypto.randomBytes(16);
+  const iv = crypto.randomBytes(12);
+  const key = crypto.pbkdf2Sync(password, salt, 100000, 32, 'sha256');
 
-function encryptMnemonic(mnemonic, password, iv) {
-  const salt = crypto.randomBytes(16); 
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
 
-  const key = generateKey(password, salt);
+  let encrypted = cipher.update(mnemonic, 'utf8');
+  encrypted = Buffer.concat([encrypted, cipher.final()]);
+  const authTag = cipher.getAuthTag();
 
-  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
-
-  let encrypted = cipher.update(mnemonic, "utf8", "hex");
-  encrypted += cipher.final("hex");
+  const encryptedData = Buffer.concat([encrypted, authTag]);
 
   return {
-    salt: salt.toString("hex"),
-    encryptedMnemonic: encrypted,
+    salt: Array.from(salt).toString(),
+    iv: Array.from(iv).toString(),
+    encryptedMnemonic: Array.from(encryptedData).toString(),
   };
 }
 
-function decryptMnemonic(encryptedData, password) {
-  const { salt, iv, encryptedMnemonic } = encryptedData;
-
-  
-  const saltBuffer = Buffer.from(salt, "hex");
-  const ivBuffer = Buffer.from(iv, "hex");
-
-  const key = generateKey(password, saltBuffer);
-
-  const decipher = crypto.createDecipheriv("aes-256-cbc", key, ivBuffer);
-
-  let decrypted = decipher.update(encryptedMnemonic, "hex", "utf8");
-  decrypted += decipher.final("utf8");
-
-  return decrypted;
-}
-
-export {key_gen,mnemonic_gen,encryptMnemonic,decryptMnemonic};
+export {key_gen,mnemonic_gen,encryptMnemonic};
