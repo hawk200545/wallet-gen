@@ -1,5 +1,5 @@
-import React, { useState,  } from "react";
-import { toast } from 'react-toastify';
+import React, { useState } from "react";
+import { toast } from "sonner";
 import * as z from "zod";
 import Footer from "./footer";
 import axios from "axios";
@@ -7,17 +7,14 @@ import { decryptMnemonic } from "../progs/wallet-gen.js";
 import { useNavigate } from "react-router-dom";
 import useAppContext from "../hooks/useAppContext";
 function Login() {
-  const {updateEmail,updateSignedIn,updateMnemonic,updateToken} = useAppContext();
-  const [email,setEmail] = useState("");
-  const [password,setPassword] = useState("");
+  const { updateEmail, updateSignedIn, updateMnemonic, updateToken } =
+    useAppContext();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [valid_email, setValid_email] = useState("");
   const [valid_password, setValid_password] = useState("");
 
   const navigate = useNavigate();
-
-
-
-  
 
   async function SubmitEvent() {
     if (valid_email || valid_password) {
@@ -31,21 +28,24 @@ function Login() {
     try {
       let response = await axios.post("http://localhost:3000/api/login", data);
       if (response.status === 200) {
-        toast.success('Login successful!');
+        toast.success("Login successful!");
         console.log(response.data);
         const { salt, iv, encryptedMnemonic } = response.data;
-        const decryptedMnemonic = await decryptMnemonic({ salt, iv, encryptedMnemonic }, password);
+        const decryptedMnemonic = await decryptMnemonic(
+          { salt, iv, encryptedMnemonic },
+          password
+        );
         updateEmail(email);
         updateMnemonic(decryptedMnemonic);
         updateToken(response.data.token);
         updateSignedIn(true);
         navigate("/home");
       } else {
-        toast.error(response.data.message || 'Login failed.');
+        toast.error(response.data.message || "Login failed.");
       }
     } catch (error) {
-      console.error('Login error:', error);
-      toast.error('An error occurred during login.');
+      console.error("Login error:", error);
+      toast.error("An error occurred during login.");
     }
   }
 
@@ -79,21 +79,24 @@ function Login() {
 
   return (
     <>
-      <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-blue-900 min-h-screen flex flex-col justify-between">
-        <div className="flex-1 flex items-center justify-center flex-col text-slate-200 ">
-          <div className="max-w-4xl w-full grid grid-cols-1 align-middle md:grid-cols-2 gap-8 items-center mt-auto">
+      <div className="bg-gradient-to-t from-matisse-950 via-gray-900 to-black h-screen w-full flex flex-col">
+        <div className="flex-1 flex items-center justify-center text-matisse-400 p-4">
+          <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             {/* Left Side - Branding */}
-            <div className="mx-4">
-              <div className="text-4xl text-left font-bold mb-4 sm:text-6xl">
-                Welcome to Hawk Wallet
+            <div className="m-auto">
+              <div className="sm:text-2xl text-xl font-bold mb-4 md:text-6xl">
+                Welcome to{" "}
+                <span className="font-quintessential text-primary leading-relaxed">
+                  Hawk Wallet
+                </span>
               </div>
-              <div className="text-m text-left sm:text-lg">
+              <div className="sm:text-lg text-md">
                 Secure your finances in style.
               </div>
             </div>
+            {/* Right Side - Login Card */}
             <div>
-              {/* Right Side - Login Card */}
-              <div className="backdrop-blur-lg mx-4 bg-white/10 p-8 rounded-xl shadow-lg ">
+              <div className="backdrop-blur-lg border border-matisse-200/20 bg-matisse-950/30 p-8 rounded-xl shadow-lg m-auto max-w-[300px] sm:max-w-[500px] ">
                 <form className="space-y-4">
                   <div>
                     <label
@@ -109,9 +112,9 @@ function Login() {
                       placeholder="Email"
                       value={email}
                       onChange={emailChange}
-                      className="w-full mt-1 p-2 rounded bg-white/20 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-text"
                     />
-                    <div className="text-red-400 text-xs mt-1 text-right">
+                    <div className="warn-line">
                       {valid_email}
                     </div>
                   </div>
@@ -130,9 +133,9 @@ function Login() {
                       placeholder="Password"
                       value={password}
                       onChange={passwordChange}
-                      className="w-full mt-1 p-2 rounded bg-white/20 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
+                      className="input-text"
                     />
-                    <div className="text-red-400 text-xs mt-1 text-right">
+                    <div className="warn-line">
                       {valid_password}
                     </div>
                   </div>
@@ -146,15 +149,15 @@ function Login() {
                     type="button"
                     onClick={SubmitEvent}
                     value="Submit"
-                    className="bg-gradient-to-b w-full from-purple-400 to-purple-700 text-white font-medium px-6 py-2 rounded-lg shadow hover:brightness-110 transition"
+                    className="submit-button"
                   />
                 </form>
               </div>
             </div>
           </div>
           {/* Footer Here */}
-          <Footer />
         </div>
+        <Footer />
       </div>
     </>
   );

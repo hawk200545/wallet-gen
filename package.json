@@ -33,7 +33,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.7.0",
-    "react-toastify": "^11.0.5",
+    "sonner": "^2.0.7",
     "stream-browserify": "^3.0.0",
     "tailwindcss": "^4.1.11",
     "tiny-secp256k1": "^2.2.3",
@@ -52,6 +52,7 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
     "vite": "^7.0.4",
+    "vite-plugin-svgr": "^4.5.0",
     "vite-plugin-wasm": "^3.3.0"
   }
 }

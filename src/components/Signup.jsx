@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 import Footer from "./footer";
 import * as z from "zod";
 import axios from "axios";
@@ -72,23 +72,26 @@ function Signup() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-blue-900 min-h-screen flex flex-col">
-      <div className="flex-1 flex items-center justify-center text-slate-200 p-4">
+    <div className="bg-gradient-to-t from-matisse-950 via-gray-900 to-black h-screen w-full flex flex-col">
+      <div className="flex-1 flex items-center justify-center text-matisse-400 p-4">
         <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Branding */}
-          <div>
-            <div className="text-4xl font-bold mb-4 sm:text-6xl">
-              Welcome to Hawk Wallet
+          <div className="m-auto">
+            <div className="sm:text-2xl text-xl font-bold mb-4 md:text-6xl">
+              Welcome to{" "}
+              <span className="font-quintessential text-primary leading-relaxed">
+                Hawk Wallet
+              </span>
             </div>
-            <div className="sm:text-lg">Secure your finances in style.</div>
+            <div className="sm:text-lg text-md">Secure your finances in style.</div>
           </div>
 
           {/* Signup Form */}
-          <div className="backdrop-blur-lg bg-white/10 p-8 rounded-xl shadow-lg">
+          <div className="backdrop-blur-lg border border-matisse-200/20 bg-matisse-950/30 p-8 rounded-xl shadow-lg m-auto max-w-[300px] sm:max-w-[500px]">
             <form className="space-y-4">
               {/* Name Field */}
               <div>
-                <label htmlFor="name" className="block text-sm font-medium">
+                <label htmlFor="name" className="block text-sm font-light">
                   Name:
                 </label>
                 <input
@@ -97,14 +100,16 @@ function Signup() {
                   value={name}
                   onChange={nameChange}
                   placeholder="Username"
-                  className="w-full mt-1 p-2 rounded bg-white/20 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-text"
                 />
-                <div className="text-red-400 text-xs mt-1 text-right">{valid_name}</div>
+                <div className="warn-line">
+                  {valid_name}
+                </div>
               </div>
 
               {/* Email Field */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium">
+                <label htmlFor="email" className="block text-sm font-light">
                   Email:
                 </label>
                 <input
@@ -113,14 +118,16 @@ function Signup() {
                   value={email}
                   onChange={emailChange}
                   placeholder="Email"
-                  className="w-full mt-1 p-2 rounded bg-white/20 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
+                  className="input-text"
                 />
-                <div className="text-red-400 text-xs mt-1 text-right">{valid_email}</div>
+                <div className="warn-line">
+                  {valid_email}
+                </div>
               </div>
 
               {/* Password Field */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium">
+                <label htmlFor="password" className="block text-sm font-light">
                   Password:
                 </label>
                 <input
@@ -128,10 +135,10 @@ function Signup() {
                   id="password"
                   value={password}
                   onChange={passwordChange}
-                  placeholder="Password"
-                  className="w-full mt-1 p-2 rounded bg-white/20 text-white placeholder-gray-300 outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="password"
+                  className="input-text"
                 />
-                <div className="text-red-400 text-xs mt-1 text-right">
+                <div className="warn-line">
                   {valid_password}
                 </div>
               </div>
@@ -149,7 +156,7 @@ function Signup() {
                 type="button"
                 onClick={SubmitEvent}
                 value="Sign up"
-                className="bg-gradient-to-b w-full from-purple-400 to-purple-700 text-white font-medium px-6 py-2 rounded-lg shadow hover:brightness-110 transition"
+                className="submit-button"
               />
             </form>
           </div>

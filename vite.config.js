@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from "@tailwindcss/vite";
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import wasm from "vite-plugin-wasm";
+import svgr from 'vite-plugin-svgr'
 
 
 // https://vite.dev/config/
@@ -29,5 +30,5 @@ export default defineConfig({
   define: {
     global: {},
   },
-  plugins: [react(), tailwindcss(), nodePolyfills(), wasm()],
+  plugins: [react(), tailwindcss(), nodePolyfills(), wasm(), svgr()],
 });

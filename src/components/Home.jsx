@@ -8,7 +8,7 @@ import WalletList from "./WalletList";
 import WalletGenerator from "./WalletGenerator";
 import MnemonicDisplay from "./MnemonicDisplay";
 import { generateWalletKeys } from "../progs/wallet-gen";
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 
 function Home() {
   const [activeCoin, setActiveCoin] = useState("bitcoin");
@@ -26,7 +26,7 @@ function Home() {
 
   useEffect(() => {
     if (!signedIn) {
-      navigate("/login");
+      navigate("/");
     }
   }, [signedIn, navigate]);
 
@@ -100,10 +100,11 @@ function Home() {
             { index: nextIndex, publicKey, privateKey }
           ]
         }
+
       }));
       
       toast.success(`${selectedCoin} wallet #${nextIndex} created!`);
-      
+      updateModal((state)=>!state);
     } catch (error) {
       console.error("Wallet generation failed:", error);
       toast.error(error.message || "Failed to generate wallet");
@@ -169,29 +170,33 @@ function Home() {
     }
   }, [signedIn, token, fetchWallets]);
 
+  const [modalState,updateModal] = useState(false);
+
   return (
-    <div className="bg-gradient-to-r from-indigo-900 via-purple-900 to-blue-900 min-h-screen">
-      <Header logoutHandle={logoutHandle} />
-      
-      <div className="container mx-auto px-4 py-8">
+    <div className="bg-gradient-to-t from-matisse-950 via-gray-900 to-black min-h-screen space-y-8">
+      <Header logoutHandle={logoutHandle} updateModal={updateModal} />
+
+      <div className="container mx-auto p-10">
         <MnemonicDisplay mnemonic={mnemonic} />
-        
-        <div className="backdrop-blur-lg bg-white/10 p-6 rounded-3xl mb-8">
-          <h2 className="text-2xl font-bold mb-6 text-white">Your Wallets</h2>
+
+        <div className="backdrop-blur-lg bg-white/5 border border-matisse-200/20 px-7 py-5 rounded-xl mb-8">
+          <h2 className="text-xl mb-6 text-primary">Your Wallets</h2>
           <CoinTabs activeCoin={activeCoin} setActiveCoin={setActiveCoin} />
-          <WalletList 
-            wallets={userWallets} 
-            activeCoin={activeCoin}
-          />
+          <WalletList wallets={userWallets} activeCoin={activeCoin} />
         </div>
 
-        <WalletGenerator 
-          selectedCoin={selectedCoin}
-          setSelectedCoin={setSelectedCoin}
-          mnemonic={mnemonic}
-          onGenerate={generateNewWallet}
-          isLoading={generatingWallet || loading}
-        />
+        {modalState && (
+          <WalletGenerator
+            selectedCoin={selectedCoin}
+            setSelectedCoin={setSelectedCoin}
+            mnemonic={mnemonic}
+            onGenerate={generateNewWallet}
+            isLoading={generatingWallet || loading}
+            onClose={()=>{
+              updateModal((state)=>!state)
+            }}
+          />
+        )}
       </div>
     </div>
   );

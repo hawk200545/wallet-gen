@@ -1,6 +1,5 @@
 import React from "react";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Toaster } from 'sonner';
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Home from "./components/Home";
@@ -19,7 +18,7 @@ function App() {
             <Route path="/home" element={<Home/>} />
           </Routes>
       </AppContextProvider>
-      <ToastContainer />
+      <Toaster />
     </>
   );
 }
