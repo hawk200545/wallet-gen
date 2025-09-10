@@ -1,12 +1,81 @@
-# React + Vite
+# Wallet Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a web application to generate and manage cryptocurrency wallets for Bitcoin, Ethereum, and Solana.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+*   **User Authentication:** Secure signup and login functionality.
+*   **Multi-Currency Support:** Generate and manage wallets for Bitcoin, Ethereum, and Solana.
+*   **Secure Mnemonic Storage:** Encrypts and stores your mnemonic phrase securely.
+*   **View Wallet Details:** Easily view your public addresses for each currency.
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+*   **Frontend:** React, Vite, Tailwind CSS
+*   **Backend:** Node.js, Express.js
+*   **Database:** MongoDB (with Mongoose)
+
+## Getting Started
+
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+
+### Prerequisites
+
+*   Node.js and npm (or yarn)
+*   MongoDB
+
+### Installation & Setup
+
+1.  **Clone the repository:**
+    ```sh
+    git clone <repository-url>
+    cd wallet-gen
+    ```
+
+2.  **Install Frontend Dependencies:**
+    ```sh
+    npm install
+    ```
+
+3.  **Install Backend Dependencies:**
+    ```sh
+    cd server
+    npm install
+    ```
+
+4.  **Configure Environment Variables:**
+    Create a `.env` file in the `server` directory and add the following:
+    ```
+    MONGO_URL=<your_mongodb_connection_string>
+    JWT_SECRET=<your_jwt_secret>
+    ```
+
+### Running the Application
+
+1.  **Start the Backend Server:**
+    From the `server` directory:
+    ```sh
+    npm run dev
+    ```
+    The server will start on the port specified in `server/.config/config.js`.
+
+2.  **Start the Frontend Development Server:**
+    From the root project directory:
+    ```sh
+    npm run dev
+    ```
+    The application will be available at `http://localhost:5173` (or another port if specified).
+
+## Available Scripts
+
+### Frontend (root directory)
+
+*   `npm run dev`: Starts the Vite development server.
+*   `npm run build`: Builds the application for production.
+*   `npm run lint`: Lints the codebase using ESLint.
+*   `npm run preview`: Serves the production build locally.
+
+### Backend (`/server` directory)
+
+*   `npm run start`: Starts the server in production mode.
+*   `npm run dev`: Starts the server in development mode with `nodemon`.
