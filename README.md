@@ -28,7 +28,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 1.  **Clone the repository:**
     ```sh
-    git clone <repository-url>
+    git clone https://github.com/hawk200545/wallet-gen
     cd wallet-gen
     ```
 
