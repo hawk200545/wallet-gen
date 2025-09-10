@@ -149,7 +149,7 @@ function Signup() {
               {/* Already have an account? */}
               <div className="text-xs">
                 Already have an account?{" "}
-                <a className="text-blue-500" onClick={()=>{
+                <a className="text-blue-500 underline cursor-pointer" onClick={()=>{
                   navigate('/');
                 }}>
                   Login

@@ -140,7 +140,7 @@ function Login() {
                   </div>
                   <div className="text-xs">
                     Don't have account?{" "}
-                    <a className="text-blue-500" onClick={()=>{
+                    <a className="text-blue-500 underline cursor-pointer" onClick={()=>{
                       navigate('/signup');
                     }}>
                       Signup
