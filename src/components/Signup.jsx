@@ -4,6 +4,8 @@ import Footer from "./footer";
 import * as z from "zod";
 import axios from "axios";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 function Signup() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -25,7 +27,7 @@ function Signup() {
       }
 
       try {
-        let response = await axios.post("http://localhost:3000/api/signup", data);
+        let response = await axios.post(BACKEND_URL + "/api/signup", data);
         if (response.status === 200) {
           toast.success("Signup successful! Please login.");
           window.location.href = "/";
@@ -60,7 +62,7 @@ function Signup() {
         "Password must be at least 8 characters with upper, lower, number, and special char."
       );
     const response = pass_format.safeParse(value);
-    setValid_password(response.success ? "" : "Invalid Password Format");
+    setValid_password(response.success ? "" : response.error.issues[0].message);
   };
 
   const emailChange = (e) => {

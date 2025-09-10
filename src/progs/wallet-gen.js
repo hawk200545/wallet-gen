@@ -7,7 +7,6 @@ import { ethers } from "ethers";
 import * as bitcoin from 'bitcoinjs-lib';
 import { BIP32Factory } from 'bip32';
 import * as ecc from 'tiny-secp256k1';
-import * as crypto from "crypto-browserify";
 
 const bip32 = BIP32Factory(ecc);
 
@@ -150,9 +149,3 @@ export function decryptMnemonic(encryptedData, password) {
     }
     return decryptData(encryptedPackage, password);
   }
-
-// Example usage:
-// const mnemonic = generateSecureMnemonic();
-// const encrypted = await encryptData(mnemonic, 'super-secret-password');
-// const decrypted = await decryptData(encrypted, 'super-secret-password');
-// console.log(mnemonic === decrypted); // true

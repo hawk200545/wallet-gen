@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import { user_route } from "./routes/user.js";
 const app = express();
-import { b_port as port } from "./.config/config.js";
+import { b_port as port, FRONTEND_URL } from "./.config/config.js";
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: FRONTEND_URL,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'token'],
   })

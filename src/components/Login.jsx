@@ -7,6 +7,8 @@ import { decryptMnemonic } from "../progs/wallet-gen.js";
 import { useNavigate } from "react-router-dom";
 import useAppContext from "../hooks/useAppContext";
 function Login() {
+
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const { updateEmail, updateSignedIn, updateMnemonic, updateToken } =
     useAppContext();
   const [email, setEmail] = useState("");
@@ -26,10 +28,9 @@ function Login() {
       password,
     };
     try {
-      let response = await axios.post("http://localhost:3000/api/login", data);
+      let response = await axios.post(BACKEND_URL + "/api/login", data);
       if (response.status === 200) {
         toast.success("Login successful!");
-        console.log(response.data);
         const { salt, iv, encryptedMnemonic } = response.data;
         const decryptedMnemonic = await decryptMnemonic(
           { salt, iv, encryptedMnemonic },
@@ -69,7 +70,6 @@ function Login() {
     setEmail(e.target.value);
     const email_format = z.email();
     let response = email_format.safeParse(e.target.value);
-    console.log(response);
     if (!response.success) {
       setValid_email("Please Enter a valid email");
     } else {

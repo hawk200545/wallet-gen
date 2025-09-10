@@ -8,20 +8,21 @@ import WalletList from "./WalletList";
 import WalletGenerator from "./WalletGenerator";
 import MnemonicDisplay from "./MnemonicDisplay";
 import { generateWalletKeys } from "../progs/wallet-gen";
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
 function Home() {
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const [activeCoin, setActiveCoin] = useState("bitcoin");
   const [userWallets, setUserWallets] = useState({
     bitcoin: { count: 0, addresses: [] },
     ethereum: { count: 0, addresses: [] },
-    solana: { count: 0, addresses: [] }
+    solana: { count: 0, addresses: [] },
   });
   const [loading, setLoading] = useState(true);
   const [selectedCoin, setSelectedCoin] = useState("bitcoin");
   const [generatingWallet, setGeneratingWallet] = useState(false);
-  
-    const { signedIn, token, mnemonic, logoutHandle } = useAppContext();
+
+  const { signedIn, token, mnemonic, logoutHandle } = useAppContext();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,79 +33,79 @@ function Home() {
 
   const fetchWallets = useCallback(async () => {
     try {
-      
       setLoading(true);
-      
+
       if (!token) {
         throw new Error("No authentication token available");
       }
-      
-      const response = await axios.get("http://localhost:3000/api/wallets", {
-        headers: { 
+
+      const response = await axios.get(BACKEND_URL + "/api/wallets", {
+        headers: {
           token,
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       });
-      
+
       if (!response.data) {
         throw new Error("Invalid response structure");
       }
-      
+
       const walletCounts = response.data.data || response.data;
       setUserWallets({
         bitcoin: { count: walletCounts.bitcoin || 0, addresses: [] },
         ethereum: { count: walletCounts.ethereum || 0, addresses: [] },
-        solana: { count: walletCounts.solana || 0, addresses: [] }
+        solana: { count: walletCounts.solana || 0, addresses: [] },
       });
-      
     } catch (error) {
       console.error("Failed to fetch wallet counts:", error);
-      
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [token, BACKEND_URL]);
 
   const generateNewWallet = useCallback(async () => {
     try {
       if (!mnemonic) {
         throw new Error("No mnemonic available");
       }
-      
+
       setGeneratingWallet(true);
       setLoading(true);
-      
+
       const nextIndex = userWallets[selectedCoin].count + 1;
-      const { publicKey, privateKey } = generateWalletKeys(mnemonic, nextIndex, selectedCoin);
-      
+      const { publicKey, privateKey } = generateWalletKeys(
+        mnemonic,
+        nextIndex,
+        selectedCoin
+      );
+
       if (!publicKey || !privateKey) {
         throw new Error("Key generation failed");
       }
-      
+
       const response = await axios.post(
-        "http://localhost:3000/api/increment-wallet",
+        BACKEND_URL + "/api/increment-wallet",
         { coinType: selectedCoin },
         { headers: { token } }
       );
-      
+
       if (!response.data?.success) {
         throw new Error("Server failed to increment wallet count");
       }
-      
-      setUserWallets(prev => ({
+
+      setUserWallets((prev) => ({
         ...prev,
         [selectedCoin]: {
           count: prev[selectedCoin].count + 1,
           addresses: [
             ...prev[selectedCoin].addresses,
-            { index: nextIndex, publicKey, privateKey }
-          ]
-        }
-
+            { index: nextIndex, publicKey, privateKey },
+          ],
+        },
       }));
-      
+
       toast.success(`${selectedCoin} wallet #${nextIndex} created!`);
-      updateModal((state)=>!state);
+      updateModal((state) => !state);
     } catch (error) {
       console.error("Wallet generation failed:", error);
       toast.error(error.message || "Failed to generate wallet");
@@ -112,9 +113,7 @@ function Home() {
       setGeneratingWallet(false);
       setLoading(false);
     }
-  }, [mnemonic, selectedCoin, token, userWallets]);
-
-  
+  }, [mnemonic, selectedCoin, token, userWallets, BACKEND_URL]);
 
   useEffect(() => {
     let isMounted = true;
@@ -131,7 +130,11 @@ function Home() {
           if (count > 0 && addresses.length !== count) {
             const generatedAddresses = [];
             for (let i = 1; i <= count; i++) {
-              const { publicKey, privateKey } = generateWalletKeys(mnemonic, i, coinType);
+              const { publicKey, privateKey } = generateWalletKeys(
+                mnemonic,
+                i,
+                coinType
+              );
               generatedAddresses.push({ index: i, publicKey, privateKey });
             }
             newAddresses[coinType] = generatedAddresses;
@@ -142,9 +145,9 @@ function Home() {
         }
 
         if (isMounted && needsUpdate) {
-          setUserWallets(prev => {
+          setUserWallets((prev) => {
             const updated = { ...prev };
-            for(const coin in newAddresses) {
+            for (const coin in newAddresses) {
               updated[coin].addresses = newAddresses[coin];
             }
             return updated;
@@ -162,7 +165,13 @@ function Home() {
     return () => {
       isMounted = false;
     };
-  }, [mnemonic, userWallets.bitcoin.count, userWallets.ethereum.count, userWallets.solana.count, userWallets]);
+  }, [
+    mnemonic,
+    userWallets.bitcoin.count,
+    userWallets.ethereum.count,
+    userWallets.solana.count,
+    userWallets,
+  ]);
 
   useEffect(() => {
     if (signedIn && token) {
@@ -170,7 +179,7 @@ function Home() {
     }
   }, [signedIn, token, fetchWallets]);
 
-  const [modalState,updateModal] = useState(false);
+  const [modalState, updateModal] = useState(false);
 
   return (
     <div className="bg-gradient-to-t from-matisse-950 via-gray-900 to-black min-h-screen space-y-8">
@@ -192,8 +201,8 @@ function Home() {
             mnemonic={mnemonic}
             onGenerate={generateNewWallet}
             isLoading={generatingWallet || loading}
-            onClose={()=>{
-              updateModal((state)=>!state)
+            onClose={() => {
+              updateModal((state) => !state);
             }}
           />
         )}
