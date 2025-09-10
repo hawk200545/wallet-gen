@@ -14,6 +14,11 @@ app.use(
 app.use(express.json());
 app.use("/api", user_route);
 
+import { connectDB } from "./database/db.js";
+
+connectDB();
+
 app.listen(port,()=>{
   console.log(`Listening port ${port}`);
 });
+export default app;

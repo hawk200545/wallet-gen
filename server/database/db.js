@@ -1,16 +1,19 @@
 import mongoose from "mongoose";
 
-import {mongo_url} from '../.config/config.js'
-
-// Connect to MongoDB
-const mongo_connect = async () => {
+export async function connectDB() {
   try {
-    await mongoose.connect(mongo_url);
-    console.log("Connected to MongoDB");
-  } catch (error) {
-    console.error("MongoDB connection error:", error);
+    if (!process.env.MONGO_URL) throw new Error("MONGO_URL is not defined in .env");
+
+    await mongoose.connect(process.env.MONGO_URL, {
+      serverSelectionTimeoutMS: 50000,
+      connectTimeoutMS: 50000,
+    });
+    console.log("Connected to database");
+  } catch (err) {
+    console.error("Database connection failed", err);
+    process.exit(1);
   }
-};
+}
 
 // Define the User schema
 const userSchema = new mongoose.Schema({
@@ -55,9 +58,4 @@ const userSchema = new mongoose.Schema({
 });
 
 // Create the User model
-const user_schema = mongoose.model("User", userSchema);
-
-// Connect to the database
-mongo_connect();
-
-export const User = user_schema;
+export const User = mongoose.model("User", userSchema);

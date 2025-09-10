@@ -7,7 +7,6 @@ import { decryptMnemonic } from "../progs/wallet-gen.js";
 import { useNavigate } from "react-router-dom";
 import useAppContext from "../hooks/useAppContext";
 function Login() {
-
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const { updateEmail, updateSignedIn, updateMnemonic, updateToken } =
     useAppContext();
@@ -141,7 +140,9 @@ function Login() {
                   </div>
                   <div className="text-xs">
                     Don't have account?{" "}
-                    <a className="text-blue-500" href="/signup">
+                    <a className="text-blue-500" onClick={()=>{
+                      navigate('/signup');
+                    }}>
                       Signup
                     </a>
                   </div>

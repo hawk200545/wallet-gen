@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import express from"express";
 import {User} from "../database/db.js"
 import bcrypt from "bcrypt";
-import {key_gen, mnemonic_gen, encryptMnemonic} from "../../wallet/wallet_gen.js";
+import {key_gen, mnemonic_gen, encryptMnemonic} from "../utils/wallet_gen.js";
 import {JWT_USER_SECRET} from "../.config/config.js";
 import {user_middleware} from "../middleware/admin_middleware.js";
 const route = Router();
@@ -15,7 +15,7 @@ route.get('/', async (req,res)=>{
 route.post('/signup', async (req,res)=>{
     const user_parse = z.object({
         name: z.string().min(1, { message: "Name is required" }),
-        email: z.email(),
+        email: z.string().email(),
         password: z
           .string()
           .min(5, { message: "Password Length must be atleast 5" })
@@ -64,7 +64,7 @@ route.post('/signup', async (req,res)=>{
 
 route.post('/login', async (req,res)=>{
   const user_parse = z.object({
-    email: z.email(),
+    email: z.string().email(),
     password: z
       .string()
       .min(5, { message: "Password Length must be atleast 5" })

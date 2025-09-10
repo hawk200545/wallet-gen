@@ -3,10 +3,11 @@ import { toast } from 'sonner';
 import Footer from "./footer";
 import * as z from "zod";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 function Signup() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -148,7 +149,9 @@ function Signup() {
               {/* Already have an account? */}
               <div className="text-xs">
                 Already have an account?{" "}
-                <a className="text-blue-500" href="/">
+                <a className="text-blue-500" onClick={()=>{
+                  navigate('/');
+                }}>
                   Login
                 </a>
               </div>
