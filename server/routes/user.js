@@ -10,7 +10,7 @@ import {user_middleware} from "../middleware/admin_middleware.js";
 const route = Router();
 route.use(express.json());
 route.get('/', async (req,res)=>{
-  res.json("The Server is working");
+  res.send("The Server is working");
 })
 route.post('/signup', async (req,res)=>{
     const user_parse = z.object({
