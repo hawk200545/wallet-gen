@@ -4,11 +4,12 @@ import { user_route } from "./routes/user.js";
 const app = express();
 import { b_port as port, FRONTEND_URL } from "./.config/config.js";
 app.use(
-  cors({
-    origin: FRONTEND_URL,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'token'],
-  })
+  // cors({
+  //   origin: FRONTEND_URL,
+  //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  //   allowedHeaders: ['Content-Type', 'token'],
+  // })
+  cors()
 );
 app.use(express.json());
 app.use("/api", user_route);
