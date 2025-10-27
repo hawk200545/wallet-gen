@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "Hawk Wallet",
+    "slug": "hawk-wallet",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}

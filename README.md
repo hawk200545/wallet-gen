@@ -1,81 +1,93 @@
-# Wallet Generator
+# Hawk Wallet (React Native)
 
-This is a web application to generate and manage cryptocurrency wallets for Bitcoin, Ethereum, and Solana.
+Hawk Wallet is a mobile-first application built with React Native and Expo. It lets users sign up, authenticate, and manage deterministic Bitcoin, Ethereum, and Solana wallets generated from a secure mnemonic phrase.
 
 ## Features
 
-*   **User Authentication:** Secure signup and login functionality.
-*   **Multi-Currency Support:** Generate and manage wallets for Bitcoin, Ethereum, and Solana.
-*   **Secure Mnemonic Storage:** Encrypts and stores your mnemonic phrase securely.
-*   **View Wallet Details:** Easily view your public addresses for each currency.
+- **User authentication** against the existing Node/Express backend.
+- **Deterministic wallet derivation** for Bitcoin, Ethereum, and Solana using a single mnemonic.
+- **Mnemonic management** with local AES-GCM decryption so the phrase never leaves the device in plain text.
+- **Clipboard helpers** to copy keys and a modal workflow to create additional wallets per coin.
 
 ## Tech Stack
 
-*   **Frontend:** React, Vite, Tailwind CSS
-*   **Backend:** Node.js, Express.js
-*   **Database:** MongoDB (with Mongoose)
+- **Mobile:** React Native, Expo, React Navigation, AsyncStorage
+- **Crypto tooling:** `@scure/bip32`, `@scure/bip39`, `@stablelib/aes-gcm`, `tweetnacl`
+- **Backend:** Node.js, Express.js (existing `server/` folder)
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
 ### Prerequisites
 
-*   Node.js and npm (or yarn)
-*   MongoDB
+- Node.js 18+
+- npm (included with Node)
+- Expo CLI (`npx expo`) – optionally install globally for convenience
+- Backend requirements (MongoDB, etc.) remain the same as before
 
-### Installation & Setup
+### Installation
 
-1.  **Clone the repository:**
-    ```sh
-    git clone https://github.com/hawk200545/wallet-gen
-    cd wallet-gen
-    ```
+```bash
+# Clone the repository
+git clone https://github.com/hawk200545/wallet-gen.git
+cd wallet-gen
 
-2.  **Install Frontend Dependencies:**
-    ```sh
-    npm install
-    ```
+# Install mobile dependencies
+npm install
 
-3.  **Install Backend Dependencies:**
-    ```sh
-    cd server
-    npm install
-    ```
+# Install backend dependencies
+cd server
+npm install
+cd ..
+```
 
-4.  **Configure Environment Variables:**
-    Create a `.env` file in the `server` directory and add the following:
-    ```
-    MONGO_URL=<your_mongodb_connection_string>
-    JWT_SECRET=<your_jwt_secret>
-    ```
+### Environment Variables
 
-### Running the Application
+The mobile app expects an Expo public environment variable pointing at the backend API root. Create an `.env` file in the project root with:
 
-1.  **Start the Backend Server:**
-    From the `server` directory:
-    ```sh
-    npm run dev
-    ```
-    The server will start on the port specified in `server/.config/config.js`.
+```
+EXPO_PUBLIC_BACKEND_URL=https://your-backend-host
+```
 
-2.  **Start the Frontend Development Server:**
-    From the root project directory:
-    ```sh
-    npm run dev
-    ```
-    The application will be available at `http://localhost:5173` (or another port if specified).
+Expo automatically exposes variables prefixed with `EXPO_PUBLIC_` to the JavaScript runtime.
 
-## Available Scripts
+### Running the App
 
-### Frontend (root directory)
+```bash
+# Start the Expo development server
+npm start
 
-*   `npm run dev`: Starts the Vite development server.
-*   `npm run build`: Builds the application for production.
-*   `npm run lint`: Lints the codebase using ESLint.
-*   `npm run preview`: Serves the production build locally.
+# Optional shortcuts once the dev server is running
+# Press "a" to launch Android (emulator/device)
+# Press "i" to launch iOS simulator (macOS only)
+# Press "w" to open the web build in a browser
+```
 
-### Backend (`/server` directory)
+The server continues to run independently:
 
-*   `npm run start`: Starts the server in production mode.
-*   `npm run dev`: Starts the server in development mode with `nodemon`.
+```bash
+cd server
+npm run dev
+```
+
+### Available Scripts
+
+- `npm start` – launch the Expo dev tools
+- `npm run android` – build & run the native Android app (requires Android tooling)
+- `npm run ios` – build & run on the iOS simulator (macOS + Xcode)
+- `npm run web` – run the Expo web target
+- `npm run lint` – lint the mobile source using ESLint
+
+Backend scripts inside `server/` are unchanged:
+
+- `npm run dev` – start the Express API with nodemon
+- `npm run start` – start the Express API in production mode
+
+## Notes on the Migration
+
+- All Vite/React DOM assets were removed in favor of a React Native layout layer.
+- LocalStorage usage moved to AsyncStorage with hydration on app start.
+- Web crypto dependencies were replaced with React Native friendly libraries (`@stablelib/aes-gcm`, `@noble/hashes`, etc.).
+- UI is rebuilt with React Native primitives and React Navigation replaces React Router.
+- Wallet derivation logic now uses pure JavaScript crypto libraries suitable for the mobile runtime.
+
+Refer to `App.js` and the `src/` directory for the new entry point, navigation stack, context provider, and modularized components.
